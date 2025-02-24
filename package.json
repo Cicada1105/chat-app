@@ -1,0 +1,23 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "Real time chat application that allows public and private group chats.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cicada1105/chat-app.git"
+  },
+  "keywords": [
+    "Chat",
+    "Real-Time"
+  ],
+  "author": "Joshua Colvin",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Cicada1105/chat-app/issues"
+  },
+  "homepage": "https://github.com/Cicada1105/chat-app#readme"
+}

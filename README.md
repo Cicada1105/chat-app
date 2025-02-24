@@ -1,2 +1,2 @@
 # chat-app
-Real time chat application that allows public and private group chats
+Real time chat application that allows public and private group chats.
