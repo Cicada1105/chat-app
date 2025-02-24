@@ -1,0 +1,14 @@
+doctype html
+html(lang='en')
+  head
+    title Socket.IO chat
+    style
+      include ../styles/room.css
+  body
+    h1#user Welcome #{username}
+    h2#room Room: #{roomname}
+    ul#messages
+    ul#userActions
+    form#form
+      input(id="input" name='message' autocomplete="off")
+      button Send

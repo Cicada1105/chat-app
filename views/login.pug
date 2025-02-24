@@ -1,0 +1,11 @@
+doctype html
+html(lang='en')
+  head
+    title Socket.IO chat
+    style
+      include ../styles/login.css
+  body
+    h1 Enter Username
+    form(id='form' action='/login' method='POST')
+      input(id="input" name='username' autocomplete="off" placeholder='Username')
+      button Send

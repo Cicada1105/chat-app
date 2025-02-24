@@ -1,0 +1,26 @@
+doctype html
+html(lang='en')
+  head
+    title Socket.IO chat
+
+    script(src="https://kit.fontawesome.com/de38352bbc.js" crossorigin="anonymous")
+    style
+      include ../styles/rooms.css
+  body
+    ul#rooms
+      li#addRoom
+        button(popovertarget='formPopover')
+          div
+      each room in rooms
+        li
+          h2
+            a(href=`/room/${room['id']}`)= room['name']
+          p #{room['num_users']}/#{room['max_num_users']}
+          button(onclick=`closeRoom('${room["id"]}')`)
+            i.fa-regular.fa-trash-can
+
+    div(popover id='formPopover')
+      form(id='form' action='/rooms' method='post')
+        input(id="input" name='room_name' placeholder='Enter Room Name' autocomplete="off" required)
+        input(type='number' name='room_max_users' min='2' max='12' placeholder='Max Room Size' required)
+        button Create
