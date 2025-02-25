@@ -3,7 +3,9 @@ const Router = express.Router();
 // Include pug library for generating and passing data to templates
 const pug = require('pug');
 // Utility functions
-const { displayToConsole } = require('./utils.js');
+const { 
+  addUser, displayToConsole
+} = require('./utils.js');
 
 const LOGIN_PAGE = pug.compileFile('./views/login.pug');
 const ROOMS_PAGE = pug.compileFile('./views/rooms.pug');
@@ -14,6 +16,8 @@ Router.get('/',(req,res) => {
 });
 Router.post('/login', (req,res) => {
   let { username } = req.body;
+
+  addUser(username);
 
   displayToConsole(`New user created: ${username}`);
 

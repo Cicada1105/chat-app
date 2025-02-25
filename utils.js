@@ -1,6 +1,11 @@
 /*
   Utility funcitons
 */
+// Global dependencies
+//    Include FileSystem library for reading and writing to files
+const fs = require('fs');
+//    Include crypto library for generating uuids
+const crypto = require('crypto');
 
 function displayToConsole(msg) {
   const DATE_OF_MESSAGE = new Date().toISOString();
@@ -33,6 +38,23 @@ function displayToConsole(msg) {
   console.log();
 }
 
+function addUser(username) {
+  let buffer = fs.readFileSync('./data.json');
+  let dataString = buffer.toString();
+  let data = JSON.parse(dataString);
+
+  let newUser = {
+    id: crypto.randomUUID(),
+    username,
+    currRoom: '',
+    rooms: []
+  }
+
+  data['users'].push(newUser);
+
+  fs.writeFileSync('./data.json', JSON.stringify(data));
+}
+
 module.exports = {
-  displayToConsole
+  addUser, displayToConsole
 }
