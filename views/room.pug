@@ -8,7 +8,41 @@ html(lang='en')
     h1#user Welcome #{username}
     h2#room Room: #{roomname}
     ul#messages
-    ul#userActions
     form#form
       input(id="input" name='message' autocomplete="off")
       button Send
+
+    script
+      include ../node_modules/socket.io/client-dist/socket.io.js
+    script(type='text/javascript').
+      var socket = io('/chat')
+
+      var form = document.getElementById('form');
+      var inputField = form['message'];
+      var messages = document.getElementById('messages');
+
+      form.onsubmit = function(e) {
+        e.preventDefault();
+
+        let message = form['message'].value;
+        let messageLI = document.createElement('li');
+        messageLI.setAttribute('id','me');
+
+        messageLI.textContent = `Me: ${message}`;
+        messages.appendChild(messageLI);
+        socket.send({ message });
+
+        form.reset();
+      }
+      socket.on('newMessage', (data) => {
+        let { message } = data;
+
+        let messageLI = document.createElement('li');
+        messageLI.textContent = `User: ${message}`;
+        messages.appendChild(messageLI);
+      });
+      socket.on('userDisconnected',(data) => {
+        let messageLI = document.createElement('li');
+        messageLI.textContent = 'User disconnected';
+        messages.appendChild(messageLI);
+      });
