@@ -54,7 +54,15 @@ function addUser(username) {
 
   fs.writeFileSync('./data.json', JSON.stringify(data));
 }
+function getRooms() {
+  let buffer = fs.readFileSync('./data.json');
+  let dataString = buffer.toString();
+  let data = JSON.parse(dataString);
+
+  return data['rooms'];
+}
 
 module.exports = {
-  addUser, displayToConsole
+  addUser, getRooms,
+  displayToConsole
 }

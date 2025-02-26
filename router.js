@@ -4,7 +4,8 @@ const Router = express.Router();
 const pug = require('pug');
 // Utility functions
 const { 
-  addUser, displayToConsole
+  addUser, getRooms,
+  displayToConsole
 } = require('./utils.js');
 
 const LOGIN_PAGE = pug.compileFile('./views/login.pug');
@@ -24,20 +25,7 @@ Router.post('/login', (req,res) => {
   res.redirect('/rooms');
 });
 Router.get('/rooms', (req,res) => {
-  const rooms = [
-    {
-      id: 1,
-      name: 'Room1',
-      num_users: 1,
-      max_num_users: 2
-    },
-    {
-      id: 2,
-      name: 'Room2',
-      num_users: 4,
-      max_num_users: 8
-    }
-  ];
+  const rooms = getRooms();
 
   res.end(
     ROOMS_PAGE({
