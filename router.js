@@ -8,6 +8,8 @@ const {
   getRoom, addRoom,
   displayToConsole
 } = require('./utils.js');
+// Middleware
+const { userExists } = require('./middleware.js');
 
 const LOGIN_PAGE = pug.compileFile('./views/login.pug');
 const ROOMS_PAGE = pug.compileFile('./views/rooms.pug');
@@ -19,13 +21,14 @@ Router.get('/',(req,res) => {
 Router.post('/login', (req,res) => {
   let { username } = req.body;
 
-  addUser(username);
+  let newUserID = addUser(username);
 
   displayToConsole(`New user created: ${username}`);
 
+  res.cookie('uci',newUserID);
   res.redirect('/rooms');
 });
-Router.get('/rooms', (req,res) => {
+Router.get('/rooms', [userExists], (req,res) => {
   const rooms = getRooms();
 
   res.end(
@@ -34,7 +37,7 @@ Router.get('/rooms', (req,res) => {
     })
   );
 })
-Router.post('/rooms', (req,res) => {
+Router.post('/rooms', [userExists], (req,res) => {
   let { room_name, room_max_users } = req.body;
 
   const newRoomID = addRoom({ 
@@ -46,14 +49,11 @@ Router.post('/rooms', (req,res) => {
 
   res.redirect(`/room/${newRoomID}`);
 })
-Router.get('/room/:roomID', (req,res) => {
+Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [userExists], (req,res) => {
   const { roomID } = req.params;
 
+  const user = req.user;
   const room = getRoom(roomID);
-
-  let user = {
-    username: 'test'
-  }
 
   displayToConsole(`User "${user.username}" joining room: "${room.name}"`);
 

@@ -53,6 +53,16 @@ function addUser(username) {
   data['users'].push(newUser);
 
   fs.writeFileSync('./data.json', JSON.stringify(data));
+
+  return newUser['id'];
+}
+function getUser(id) {
+  let buffer = fs.readFileSync('./data.json');
+  let dataString = buffer.toString();
+  let data = JSON.parse(dataString);
+  let result = data['users'].find(user => user['id'] === id);
+
+  return result;
 }
 function getRooms() {
   let buffer = fs.readFileSync('./data.json');
@@ -89,7 +99,7 @@ function addRoom({ room_name, room_max_users }) {
 }
 
 module.exports = {
-  addUser, getRooms,
-  getRoom, addRoom,
-  displayToConsole
+  addUser, getUser,
+  getRooms, getRoom,
+  addRoom, displayToConsole
 }
