@@ -5,8 +5,8 @@ html(lang='en')
     style
       include ../styles/room.css
   body
-    h1#user Welcome #{username}
-    h2#room Room: #{roomname}
+    h1#user Welcome #{user['username']}
+    h2#room Room: #{room['name']}
     ul#messages
     form#form
       input(id="input" name='message' autocomplete="off")

@@ -2,18 +2,5 @@
    "users":
    [],
    "rooms":
-   [
-      {
-         "id": 1,
-         "name": "Room1",
-         "num_users": 1,
-         "max_num_users": 2
-      },
-      {
-         "id": 2,
-         "name": "Room2",
-         "num_users": 4,
-         "max_num_users": 8
-      }
-   ]
+   []
 }

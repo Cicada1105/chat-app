@@ -5,6 +5,7 @@ const pug = require('pug');
 // Utility functions
 const { 
   addUser, getRooms,
+  getRoom, addRoom,
   displayToConsole
 } = require('./utils.js');
 
@@ -36,23 +37,30 @@ Router.get('/rooms', (req,res) => {
 Router.post('/rooms', (req,res) => {
   let { room_name, room_max_users } = req.body;
 
+  const newRoomID = addRoom({ 
+    room_name,
+    room_max_users: parseInt(room_max_users)
+  });
+
   displayToConsole(`Creating new room: ${room_name}`);
 
-  let id = 1;
-
-  res.redirect(`/room/${id}`);
+  res.redirect(`/room/${newRoomID}`);
 })
 Router.get('/room/:roomID', (req,res) => {
   const { roomID } = req.params;
 
-  let data = {
-    username: 'John',
-    roomname: 'Chatsphere'
+  const room = getRoom(roomID);
+
+  let user = {
+    username: 'test'
   }
 
-  displayToConsole(`User "${data.username}" joining room: "${roomID}"`);
+  displayToConsole(`User "${user.username}" joining room: "${room.name}"`);
 
-  res.end(ROOM_PAGE(data));
+  res.end(ROOM_PAGE({
+    user,
+    room
+  }));
 })
 // Redirect any other incorrect path traffic to the home page
 Router.use('*', (req,res) => {

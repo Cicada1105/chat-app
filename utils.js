@@ -61,8 +61,35 @@ function getRooms() {
 
   return data['rooms'];
 }
+function getRoom(id){
+  let buffer = fs.readFileSync('./data.json');
+  let dataString = buffer.toString();
+  let data = JSON.parse(dataString);
+  let result = data['rooms'].find(room => room['id'] === id);
+
+  return result;
+}
+function addRoom({ room_name, room_max_users }) {
+  let buffer = fs.readFileSync('./data.json');
+  let dataString = buffer.toString();
+  let data = JSON.parse(dataString);
+
+  let newRoom = {
+    id: crypto.randomUUID(),
+    name: room_name,
+    num_users: 0,
+    max_num_users: room_max_users,
+  }
+
+  data['rooms'].push(newRoom);
+
+  fs.writeFileSync('./data.json', JSON.stringify(data));
+
+  return newRoom['id'];
+}
 
 module.exports = {
   addUser, getRooms,
+  getRoom, addRoom,
   displayToConsole
 }
