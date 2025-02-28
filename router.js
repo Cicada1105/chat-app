@@ -10,7 +10,7 @@ const {
   displayToConsole
 } = require('./utils');
 // Middleware
-const { userExists } = require('./middleware.js');
+const { userExists, clearCurrentRoom } = require('./middleware.js');
 
 const LOGIN_PAGE = pug.compileFile('./views/login.pug');
 const ROOMS_PAGE = pug.compileFile('./views/rooms.pug');
@@ -29,7 +29,7 @@ Router.post('/login', (req,res) => {
   res.cookie('uci',newUserID);
   res.redirect('/rooms');
 });
-Router.get('/rooms', [userExists], (req,res) => {
+Router.get('/rooms', [userExists, clearCurrentRoom], (req,res) => {
   const rooms = getRooms();
 
   res.end(

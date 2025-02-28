@@ -47,7 +47,27 @@ function addUserRoom(userID, roomID) {
     _setFileData(data);
   }
 }
+function removeUserCurrentRoom(userID) {
+  let data = _getFileData();
+
+  let index = data['users'].findIndex(user => user['id'] === userID);
+
+  if ( index > -1 ) {
+    let currUser = data['users'][index];
+    
+    // Only remove room if there is one to be removed
+    if ( currUser.currRoom ) {
+      currUser['currRoom'] = '';
+
+      // Update data with new user info
+      data['users'][index] = currUser;
+
+      _setFileData(data);
+    }
+  }
+}
 
 module.exports = {
-  addUser, getUser, addUserRoom
+  addUser, getUser,
+  addUserRoom, removeUserCurrentRoom
 }

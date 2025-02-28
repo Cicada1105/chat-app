@@ -1,4 +1,7 @@
-const { getUser } = require('./utils');
+const { 
+  getUser, removeUserCurrentRoom,
+  decrementRoomUsers
+} = require('./utils');
 
 function userExists(req,res,next) {
   let cookies = req['headers']['cookie'];
@@ -30,7 +33,27 @@ function userExists(req,res,next) {
     req.url === '/' ? next() : res.redirect('/');
   }
 }
+/*
+  This middleware removes the current user from the current room
+  they are in when navigating elsewhere
+*/
+function clearCurrentRoom(req,res,next) {
+  // Retrieve user from userExists middleware
+  const user = req.user;
+
+  // Remove current room if there is one to be removed
+  if ( user.currRoom ) {
+    // Remove user from current room
+    removeUserCurrentRoom(user['id']);
+    // Decrease number of users in the room
+    decrementRoomUsers(user['currRoom']);
+    // Update user data in the request object
+    req.user = getUser(user['id']);
+  }
+
+  next();
+}
 
 module.exports = {
-  userExists
+  userExists, clearCurrentRoom
 }

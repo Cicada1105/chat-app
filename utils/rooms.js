@@ -52,8 +52,19 @@ function incrementRoomUsers(roomID) {
 
   return false;
 }
+function decrementRoomUsers(roomID) {
+  let data = _getFileData();
+
+  let roomIndex = data['rooms'].findIndex(room => room['id'] === roomID);
+
+  if ( roomIndex > -1 ) {
+    data['rooms'][roomIndex].num_users -= 1;
+
+    _setFileData(data);
+  }
+}
 
 module.exports = {
-  getRooms, getRoom,
-  addRoom, incrementRoomUsers
+  getRooms, getRoom, addRoom,
+  incrementRoomUsers, decrementRoomUsers
 }
