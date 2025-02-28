@@ -4,7 +4,7 @@ const {
 } = require('./utils');
 
 function userExists(req,res,next) {
-  let cookies = req['headers']['cookie'];
+  let cookies = req.headers['cookie'] || '';
   let cookieParts = cookies.split(';');
   let userID;
 
