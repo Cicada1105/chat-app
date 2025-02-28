@@ -7,7 +7,7 @@ const {
   addUser, getRooms,
   getRoom, addRoom,
   displayToConsole
-} = require('./utils.js');
+} = require('./utils');
 // Middleware
 const { userExists } = require('./middleware.js');
 

@@ -1,4 +1,4 @@
-const { displayToConsole } = require('./utils.js');
+const { displayToConsole } = require('./utils');
 
 function initSocketConnection(io) {
   io.of('/chat').on('connection', (socket) => {
