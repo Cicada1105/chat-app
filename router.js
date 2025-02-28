@@ -45,7 +45,9 @@ Router.post('/rooms', [userExists], (req,res) => {
     room_max_users: parseInt(room_max_users)
   });
 
-  displayToConsole(`Creating new room: ${room_name}`);
+  const user = req.user;
+
+  displayToConsole(`Room "${room_name}" created by "${user['username']}"`);
 
   res.redirect(`/room/${newRoomID}`);
 })
