@@ -17,7 +17,8 @@ function userExists(req,res,next) {
     const user = getUser(userID);
 
     if ( !user ) {
-      res.redirect('/');
+      // If user is already at login page no need to redirect and cause infinit middleware check
+      req.url === '/' ? next() : res.redirect('/');
     }
     else {
       req.user = user;
@@ -25,7 +26,8 @@ function userExists(req,res,next) {
     }
   }
   else {
-    res.redirect('/'); 
+    // If user is already at login page no need to redirect and cause infinit middleware check
+    req.url === '/' ? next() : res.redirect('/');
   }
 }
 
