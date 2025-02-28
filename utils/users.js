@@ -2,15 +2,13 @@
   Users Utility Functions
 */
 // Global dependencies
-//    Include FileSystem library for reading and writing to files
-const fs = require('fs');
 //    Include crypto library for generating uuids
 const crypto = require('crypto');
+// Local dependencies
+const { _getFileData, _setFileData } = require('./utils');
 
 function addUser(username) {
-  let buffer = fs.readFileSync('./data.json');
-  let dataString = buffer.toString();
-  let data = JSON.parse(dataString);
+  let data = _getFileData();
 
   let newUser = {
     id: crypto.randomUUID(),
@@ -21,14 +19,12 @@ function addUser(username) {
 
   data['users'].push(newUser);
 
-  fs.writeFileSync('./data.json', JSON.stringify(data));
+  _setFileData(data);
 
   return newUser['id'];
 }
 function getUser(id) {
-  let buffer = fs.readFileSync('./data.json');
-  let dataString = buffer.toString();
-  let data = JSON.parse(dataString);
+  let data = _getFileData();
   let result = data['users'].find(user => user['id'] === id);
 
   return result;

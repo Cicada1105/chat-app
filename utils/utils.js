@@ -1,6 +1,8 @@
 /*
   Utility funcitons
 */
+// Global dependencies
+const fs = require('fs');
 
 function displayToConsole(msg) {
   const DATE_OF_MESSAGE = new Date().toISOString();
@@ -32,7 +34,17 @@ function displayToConsole(msg) {
   console.log(DIVIDER);
   console.log();
 }
+function _getFileData(){
+  let buffer = fs.readFileSync('./data.json');
+  let dataString = buffer.toString();
+  let data = JSON.parse(dataString);
+
+  return data;
+}
+function _setFileData(data) {
+  fs.writeFileSync('./data.json', JSON.stringify(data));
+}
 
 module.exports = {
-  displayToConsole
+  displayToConsole, _getFileData, _setFileData
 }

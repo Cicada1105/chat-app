@@ -2,30 +2,24 @@
   Rooms Utility Functions
 */
 // Global dependencies
-//    Include FileSystem library for reading and writing to files
-const fs = require('fs');
 //    Include crypto library for generating uuids
 const crypto = require('crypto');
+// Local dependencies
+const { _getFileData, _setFileData } = require('./utils');
 
 function getRooms() {
-  let buffer = fs.readFileSync('./data.json');
-  let dataString = buffer.toString();
-  let data = JSON.parse(dataString);
+  let data = _getFileData();
 
   return data['rooms'];
 }
 function getRoom(id){
-  let buffer = fs.readFileSync('./data.json');
-  let dataString = buffer.toString();
-  let data = JSON.parse(dataString);
+  let data = _getFileData();
   let result = data['rooms'].find(room => room['id'] === id);
 
   return result;
 }
 function addRoom({ room_name, room_max_users }) {
-  let buffer = fs.readFileSync('./data.json');
-  let dataString = buffer.toString();
-  let data = JSON.parse(dataString);
+  let data = _getFileData();
 
   let newRoom = {
     id: crypto.randomUUID(),
@@ -36,7 +30,7 @@ function addRoom({ room_name, room_max_users }) {
 
   data['rooms'].push(newRoom);
 
-  fs.writeFileSync('./data.json', JSON.stringify(data));
+  _setFileData(data);
 
   return newRoom['id'];
 }
