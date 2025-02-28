@@ -15,10 +15,10 @@ const LOGIN_PAGE = pug.compileFile('./views/login.pug');
 const ROOMS_PAGE = pug.compileFile('./views/rooms.pug');
 const ROOM_PAGE = pug.compileFile('./views/room.pug');
 
-Router.get('/',(req,res) => {
+Router.get('/', [userExists], (req,res) => {
   res.end(LOGIN_PAGE());
 });
-Router.post('/login', (req,res) => {
+Router.post('/login', [userExists], (req,res) => {
   let { username } = req.body;
 
   let newUserID = addUser(username);
