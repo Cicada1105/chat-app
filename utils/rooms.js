@@ -34,7 +34,26 @@ function addRoom({ room_name, room_max_users }) {
 
   return newRoom['id'];
 }
+function incrementRoomUsers(roomID) {
+  let data = _getFileData();
+
+  let roomIndex = data['rooms'].findIndex(room => room['id'] === roomID);
+
+  if ( roomIndex > -1 ) {
+    let currRoom = data['rooms'][roomIndex];
+    // Only increment if there is still space in the room
+    if ( (currRoom.num_users + 1) <= currRoom.max_num_users ) {
+      data['rooms'][roomIndex].num_users += 1;
+      _setFileData(data);
+      // Successfully incremented number of users in the room
+      return true;
+    } 
+  }
+
+  return false;
+}
 
 module.exports = {
-  getRooms, getRoom, addRoom
+  getRooms, getRoom,
+  addRoom, incrementRoomUsers
 }

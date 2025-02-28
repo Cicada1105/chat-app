@@ -29,7 +29,25 @@ function getUser(id) {
 
   return result;
 }
+function addUserRoom(userID, roomID) {
+  let data = _getFileData();
+
+  let index = data['users'].findIndex(user => user['id'] === userID);
+
+  if ( index > -1 ) {
+    let currUser = data['users'][index];
+
+    // Only add room to user's rooms if they are not already a part of it
+    !currUser['rooms'].includes(roomID) && currUser['rooms'].push(roomID);
+    currUser['currRoom'] = roomID;
+
+    // Update data with new user info
+    data['users'][index] = currUser;
+
+    _setFileData(data);
+  }
+}
 
 module.exports = {
-  addUser, getUser
+  addUser, getUser, addUserRoom
 }

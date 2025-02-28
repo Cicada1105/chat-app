@@ -7,15 +7,18 @@ const {
 } = require('./utils.js');
 // Functions specific to user data
 const { 
-  addUser, getUser
+  addUser, getUser, addUserRoom
 } = require('./users.js');
 // Functions specific to room data
 const {
-  getRooms, getRoom, addRoom
+  getRooms, getRoom,
+  addRoom, incrementRoomUsers
 } = require('./rooms.js');
 
 module.exports = {
   addUser, getUser,
-  getRooms, getRoom,
-  addRoom, displayToConsole
+  addUserRoom, getRooms, 
+  getRoom, addRoom, 
+  incrementRoomUsers,
+  displayToConsole
 }
