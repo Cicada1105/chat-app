@@ -15,7 +15,16 @@ html(lang='en')
     script
       include ../node_modules/socket.io/client-dist/socket.io.js
     script(type='text/javascript').
-      var socket = io('/chat')
+      const userID = "#{user['id']}";
+      const roomID = "#{room['id']}"
+
+      // Connect to socket, passing in userID and roomID as data
+      var socket = io('/chat',{
+        query: {
+          userID,
+          roomID
+        }
+      })
 
       var form = document.getElementById('form');
       var inputField = form['message'];
@@ -34,15 +43,24 @@ html(lang='en')
 
         form.reset();
       }
+      socket.on('userConnected', (data) => {
+        let { username } = data;
+
+        let messageLI = document.createElement('li');
+        messageLI.textContent = `${username} connected.`;
+        messages.appendChild(messageLI);
+      })
       socket.on('newMessage', (data) => {
         let { message } = data;
 
         let messageLI = document.createElement('li');
-        messageLI.textContent = `User: ${message}`;
+        messageLI.textContent = message;
         messages.appendChild(messageLI);
       });
       socket.on('userDisconnected',(data) => {
+        let { username } = data;
+
         let messageLI = document.createElement('li');
-        messageLI.textContent = 'User disconnected';
+        messageLI.textContent = `${username} disconnected`;
         messages.appendChild(messageLI);
       });

@@ -24,7 +24,7 @@ Router.post('/login', (req,res) => {
 
   let newUserID = addUser(username);
 
-  displayToConsole(`New user created: ${username}`);
+  displayToConsole(`New user created: "${username}"`);
 
   res.cookie('uci',newUserID);
   res.redirect('/rooms');
