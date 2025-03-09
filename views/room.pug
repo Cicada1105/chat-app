@@ -43,24 +43,25 @@ html(lang='en')
 
         form.reset();
       }
+
+
+      function displayMessage(msg) {
+        let messageLI = document.createElement('li');
+        messageLI.textContent = msg;
+        messages.appendChild(messageLI);
+      }
       socket.on('userConnected', (data) => {
         let { username } = data;
 
-        let messageLI = document.createElement('li');
-        messageLI.textContent = `${username} connected.`;
-        messages.appendChild(messageLI);
+        displayMessage(`${username} connected.`);
       })
       socket.on('newMessage', (data) => {
         let { message } = data;
 
-        let messageLI = document.createElement('li');
-        messageLI.textContent = message;
-        messages.appendChild(messageLI);
+        displayMessage(message);
       });
       socket.on('userDisconnected',(data) => {
         let { username } = data;
 
-        let messageLI = document.createElement('li');
-        messageLI.textContent = `${username} disconnected`;
-        messages.appendChild(messageLI);
+        displayMessage(`${username} disconnected`);
       });
