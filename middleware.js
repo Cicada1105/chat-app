@@ -25,7 +25,8 @@ function userExists(req,res,next) {
     }
     else {
       req.user = user;
-      next();
+      // If user is at the login page, redirect to the rooms page
+      req.url === '/' ? res.redirect('/rooms') : next();
     }
   }
   else {
