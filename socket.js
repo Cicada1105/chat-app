@@ -17,6 +17,17 @@ function initSocketConnection(io) {
       username: currentUser['username']
     });
 
+    socket.on('isTyping',(data) => {
+      socket.to(roomID).emit('userTyping',{
+        id: currentUser['id'],
+        username: currentUser['username']
+      });
+    });
+    socket.on('isNotTyping',(data) => {
+      socket.to(roomID).emit('userNotTyping',{
+        id: currentUser['id']
+      });
+    });
     socket.on('message',(data) => {
       let { message } = data;
       socket.to(roomID).emit('newMessage',{ 

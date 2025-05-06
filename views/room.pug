@@ -8,6 +8,7 @@ html(lang='en')
     h1#user Welcome #{user['username']}
     h2#room Room: #{room['name']}
     ul#messages
+    ul#userActions
     form#form
       input(id="input" name='message' autocomplete="off")
       button Send
@@ -24,12 +25,24 @@ html(lang='en')
           userID,
           roomID
         }
-      })
+      });
 
       var form = document.getElementById('form');
       var inputField = form['message'];
       var messages = document.getElementById('messages');
+      var userActions = document.getElementById('userActions');
 
+      let isTyping = false;
+      inputField.addEventListener('keyup',(e) => {
+        if ( e.target.value.length === 1 && !isTyping ) {
+          isTyping = !isTyping;
+          socket.emit('isTyping')
+        }
+        else if ( e.target.value.length === 0 && isTyping ) {
+          isTyping = false;
+          socket.emit('isNotTyping');
+        }
+      });
       form.onsubmit = function(e) {
         e.preventDefault();
 
@@ -44,7 +57,6 @@ html(lang='en')
         form.reset();
       }
 
-
       function displayMessage(msg) {
         let messageLI = document.createElement('li');
         messageLI.textContent = msg;
@@ -55,6 +67,17 @@ html(lang='en')
 
         displayMessage(`${username} connected.`);
       })
+      socket.on('userTyping',(data) => {
+        let { id, username } = data;
+        let typingLI = document.createElement('li');
+        typingLI.setAttribute('id',id);
+        typingLI.innerHTML = `${username} <div class='typing-bubbles'><span></span><span></span><span></span></div>`;
+        userActions.appendChild(typingLI);
+      });
+      socket.on('userNotTyping',(data) => {
+        let { id } = data;
+        userActions.children[id].remove();
+      });
       socket.on('newMessage', (data) => {
         let { message } = data;
 
