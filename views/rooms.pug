@@ -16,8 +16,9 @@ html(lang='en')
           h2
             a(href=`/room/${room['id']}`)= room['name']
           p #{room['num_users']}/#{room['max_num_users']}
-          button(onclick=`closeRoom('${room["id"]}')`)
-            i.fa-regular.fa-trash-can
+          if ( room['owner_id'] == user['id'] )
+            button(onclick=`closeRoom('${room["id"]}')`)
+              i.fa-regular.fa-trash-can
 
     div(popover id='formPopover')
       form(id='form' action='/rooms' method='post')

@@ -32,8 +32,11 @@ Router.post('/login', (req,res) => {
 Router.get('/rooms', [userExists, clearCurrentRoom], (req,res) => {
   const rooms = getRooms();
 
+  const user = req.user;
+
   res.end(
     ROOMS_PAGE({
+      user,
       rooms
     })
   );
@@ -41,12 +44,13 @@ Router.get('/rooms', [userExists, clearCurrentRoom], (req,res) => {
 Router.post('/rooms', [userExists], (req,res) => {
   let { room_name, room_max_users } = req.body;
 
-  const newRoomID = addRoom({ 
+  const user = req.user;
+
+  const newRoomID = addRoom({
+    owner_id: user['id'],
     room_name,
     room_max_users: parseInt(room_max_users)
   });
-
-  const user = req.user;
 
   displayToConsole(`Room "${room_name}" created by "${user['username']}"`);
 

@@ -18,11 +18,12 @@ function getRoom(id){
 
   return result;
 }
-function addRoom({ room_name, room_max_users }) {
+function addRoom({ owner_id, room_name, room_max_users }) {
   let data = _getFileData();
 
   let newRoom = {
     id: crypto.randomUUID(),
+    owner_id,
     name: room_name,
     num_users: 0,
     max_num_users: room_max_users,
