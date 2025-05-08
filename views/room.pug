@@ -88,3 +88,6 @@ html(lang='en')
 
         displayMessage(`${username} disconnected`);
       });
+      socket.on('disconnect',() => {
+        window.location.assign('/rooms');
+      });

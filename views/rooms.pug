@@ -17,7 +17,7 @@ html(lang='en')
             a(href=`/room/${room['id']}`)= room['name']
           p #{room['num_users']}/#{room['max_num_users']}
           if ( room['owner_id'] == user['id'] )
-            button(onclick=`closeRoom('${room["id"]}')`)
+            button(onclick=`closeRoom('${user["id"]}','${room["id"]}')`)
               i.fa-regular.fa-trash-can
 
     div(popover id='formPopover')
@@ -25,3 +25,19 @@ html(lang='en')
         input(id="input" name='room_name' placeholder='Enter Room Name' autocomplete="off" required)
         input(type='number' name='room_max_users' min='2' max='12' placeholder='Max Room Size' required)
         button Create
+
+    script
+      include ../node_modules/socket.io/client-dist/socket.io.js
+    script(type='text/javascript').
+      var socket = io('/rooms');
+
+      function closeRoom(userID, roomID) {
+        console.log('closing');
+
+        socket.emit('closeRoom',{
+          userID,
+          roomID
+        });
+        // window.location.reload();
+        window.location.assign('/rooms');
+      }

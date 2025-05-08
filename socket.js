@@ -1,4 +1,7 @@
-const { getUser, displayToConsole } = require('./utils');
+const {
+  getUser, getRoom,
+  removeRoom, displayToConsole
+} = require('./utils');
 
 function initSocketConnection(io) {
   io.of('/chat').on('connection', (socket) => {
@@ -42,6 +45,22 @@ function initSocketConnection(io) {
       });
     })
   });
+  io.of('/rooms').on('connection',(socket) => {
+    socket.on('closeRoom',(data) => {
+      let { userID, roomID } = data;
+      // Check if user is actually the owner of the room
+      const room = getRoom(roomID);
+
+      if ( room['owner_id'] === userID ) {
+        const user = getUser(userID);
+        displayToConsole(`User "${user.username}" closing room "${room.name}"`);
+        // Disconnect all users in the corresponding room
+        io.of('/chat').disconnectSockets(roomID);
+        // Remove room
+        removeRoom(roomID);
+      }
+    });
+  })
 }
 
 module.exports = { initSocketConnection }

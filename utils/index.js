@@ -12,14 +12,14 @@ const {
 } = require('./users.js');
 // Functions specific to room data
 const {
-  getRooms, getRoom, addRoom,
+  getRooms, getRoom, addRoom, removeRoom,
   incrementRoomUsers, decrementRoomUsers
 } = require('./rooms.js');
 
 module.exports = {
   addUser, getUser,
   addUserRoom, removeUserCurrentRoom,
-  getRooms, getRoom, addRoom, 
+  getRooms, getRoom, addRoom, removeRoom,
   incrementRoomUsers, decrementRoomUsers,
   displayToConsole
 }

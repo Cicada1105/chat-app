@@ -64,8 +64,18 @@ function decrementRoomUsers(roomID) {
     _setFileData(data);
   }
 }
+function removeRoom(roomID) {
+  let data = _getFileData();
+
+  let index = data['rooms'].findIndex(currRoom => currRoom['id'] === roomID);
+
+  if ( index > -1 ) {
+    data['rooms'].splice(index, index + 1);
+    _setFileData(data);
+  }
+}
 
 module.exports = {
-  getRooms, getRoom, addRoom,
+  getRooms, getRoom, addRoom, removeRoom,
   incrementRoomUsers, decrementRoomUsers
 }
