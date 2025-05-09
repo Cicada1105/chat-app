@@ -1,6 +1,6 @@
 const {
-  getUser, getRoom,
-  removeRoom, displayToConsole
+  getUser, getRoom, removeRoom,
+  removeRoomFromUsersList, displayToConsole
 } = require('./utils');
 
 function initSocketConnection(io) {
@@ -58,6 +58,8 @@ function initSocketConnection(io) {
         io.of('/chat').disconnectSockets(roomID);
         // Remove room
         removeRoom(roomID);
+        // Remove room from users room list
+        removeRoomFromUsersList(roomID);
       }
     });
   })

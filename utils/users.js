@@ -66,8 +66,22 @@ function removeUserCurrentRoom(userID) {
     }
   }
 }
+function removeRoomFromUsersList(roomID) {
+  let data = _getFileData();
+  let users = data['users'];
+
+  users.forEach((user,userIndex) => {
+    let index = user['rooms'].findIndex(currRoomID => currRoomID === roomID);
+
+    if ( index > -1 ) {
+      data['users'][userIndex]['rooms'].splice(index, index + 1);
+    }
+  });
+
+  _setFileData(data);
+}
 
 module.exports = {
-  addUser, getUser,
-  addUserRoom, removeUserCurrentRoom
+  addUser, getUser, addUserRoom, 
+  removeUserCurrentRoom, removeRoomFromUsersList
 }
