@@ -93,8 +93,9 @@ Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [userExists], (req,res) =>
   }
 })
 // Redirect any other incorrect path traffic to the home page
-Router.use('*', (req,res) => {
+// Not properly catching as fallback
+/*Router.use('*', (req,res) => {
   res.redirect('/');
-});
+});*/
 
 module.exports = Router;
