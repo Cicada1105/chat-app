@@ -3,7 +3,7 @@ html(lang='en')
   head
     title Socket.IO chat
     style
-      include ../styles/room.css
+      include ./index.css
   body
     h1#user Welcome #{user['username']}
     h2#room Room: #{room['name']}
@@ -14,7 +14,7 @@ html(lang='en')
       button Send
 
     script
-      include ../node_modules/socket.io/client-dist/socket.io.js
+      include ../../node_modules/socket.io/client-dist/socket.io.js
     script(type='text/javascript').
       const userID = "#{user['id']}";
       const roomID = "#{room['id']}"

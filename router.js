@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const Router = express.Router();
 // Include pug library for generating and passing data to templates
@@ -12,9 +13,16 @@ const {
 // Middleware
 const { userExists, clearCurrentRoom } = require('./middleware.js');
 
-const LOGIN_PAGE = pug.compileFile('./views/login.pug');
-const ROOMS_PAGE = pug.compileFile('./views/rooms.pug');
-const ROOM_PAGE = pug.compileFile('./views/room.pug');
+// Base views path
+const VIEWS_PATH = path.join(__dirname,'views');
+// Application pages file paths
+const LOGIN_VIEW_PATH = path.join(VIEWS_PATH,'login/index.pug');
+const ROOMS_VIEW_PATH = path.join(VIEWS_PATH,'rooms/index.pug');
+const ROOM_VIEW_PATH = path.join(VIEWS_PATH,'room/index.pug');
+
+const LOGIN_PAGE = pug.compileFile(LOGIN_VIEW_PATH);
+const ROOMS_PAGE = pug.compileFile(ROOMS_VIEW_PATH);
+const ROOM_PAGE = pug.compileFile(ROOM_VIEW_PATH);
 
 Router.get('/', [userExists], (req,res) => {
   res.end(LOGIN_PAGE());

@@ -5,7 +5,7 @@ html(lang='en')
 
     script(src="https://kit.fontawesome.com/de38352bbc.js" crossorigin="anonymous")
     style
-      include ../styles/rooms.css
+      include ./index.css
   body
     ul#rooms
       li#addRoom
@@ -27,7 +27,7 @@ html(lang='en')
         button Create
 
     script
-      include ../node_modules/socket.io/client-dist/socket.io.js
+      include ../../node_modules/socket.io/client-dist/socket.io.js
     script(type='text/javascript').
       var socket = io('/rooms');
 
