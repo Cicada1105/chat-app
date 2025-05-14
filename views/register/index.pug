@@ -1,0 +1,22 @@
+doctype html
+html(lang='en')
+  head
+    title Socket.IO chat | Register
+    style
+      include ./index.css
+  body
+    h1 Register
+    form(id='form' action='/register' method='POST')
+      if ( errorMsg )
+        p.error= errorMsg
+      div.input-control
+        label(for='username') Username
+        input(id="username" name='username' autocomplete="off" placeholder='Username')
+      div.input-control
+        label(for='password') Password
+        input(id='password' type='password' name='password' placeholder='Password')
+      div.input-control
+        label(for='passwordConfirm') Confirm Password
+        input(id='passwordConfirm' type='password' placeholder='Confirm Password')
+
+      button Register

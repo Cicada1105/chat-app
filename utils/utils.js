@@ -3,6 +3,7 @@
 */
 // Global dependencies
 const fs = require('fs');
+const path = require('path');
 
 function displayToConsole(msg) {
   const DATE_OF_MESSAGE = new Date().toISOString();
@@ -44,7 +45,14 @@ function _getFileData(){
 function _setFileData(data) {
   fs.writeFileSync('./data.json', JSON.stringify(data));
 }
+function resolveViewPath(viewName) {
+  const VIEWS_BASE_PATH = path.join(__dirname,'../views');
+  const VIEW_PATH = path.join(VIEWS_BASE_PATH,`${viewName}/index.pug`);
+
+  return VIEW_PATH;
+}
 
 module.exports = {
-  displayToConsole, _getFileData, _setFileData
+  displayToConsole, resolveViewPath,
+  _getFileData, _setFileData
 }

@@ -3,7 +3,7 @@
 */
 // General utility functions
 const {
-  displayToConsole
+  displayToConsole, resolveViewPath
 } = require('./utils.js');
 // Functions specific to user data
 const { 
@@ -21,5 +21,5 @@ module.exports = {
   removeUserCurrentRoom, removeRoomFromUsersList,
   getRooms, getRoom, addRoom, removeRoom,
   incrementRoomUsers, decrementRoomUsers,
-  displayToConsole
+  displayToConsole, resolveViewPath
 }
