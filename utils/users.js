@@ -7,12 +7,14 @@ const crypto = require('crypto');
 // Local dependencies
 const { _getFileData, _setFileData } = require('./utils');
 
-function addUser(username) {
+function addUser({ username, password, salt }) {
   let data = _getFileData();
 
   let newUser = {
     id: crypto.randomUUID(),
     username,
+    password,
+    salt,
     currRoom: '',
     rooms: []
   }
@@ -26,6 +28,12 @@ function addUser(username) {
 function getUser(id) {
   let data = _getFileData();
   let result = data['users'].find(user => user['id'] === id);
+
+  return result;
+}
+function getUserByUsername(username) {
+  let data = _getFileData();
+  let result = data['users'].find(user => user['username'] === username);
 
   return result;
 }
@@ -82,6 +90,6 @@ function removeRoomFromUsersList(roomID) {
 }
 
 module.exports = {
-  addUser, getUser, addUserRoom, 
+  addUser, getUser, getUserByUsername, addUserRoom, 
   removeUserCurrentRoom, removeRoomFromUsersList
 }

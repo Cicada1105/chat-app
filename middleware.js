@@ -16,22 +16,23 @@ function userExists(req,res,next) {
     }
   }
 
+  const isFormPage = req.url === '/' || req.url == '/register';
   if ( userID ) {
     const user = getUser(userID);
 
     if ( !user ) {
-      // If user is already at login page no need to redirect and cause infinit middleware check
-      req.url === '/' ? next() : res.redirect('/');
+      // If user is already at login or register page no need to redirect and cause infinit middleware check
+       isFormPage ? next() : res.redirect('/register');
     }
     else {
       req.user = user;
-      // If user is at the login page, redirect to the rooms page
-      req.url === '/' ? res.redirect('/rooms') : next();
+      // If user is at the login or register page, redirect to the rooms page
+      isFormPage ? res.redirect('/rooms') : next();
     }
   }
   else {
-    // If user is already at login page no need to redirect and cause infinit middleware check
-    req.url === '/' ? next() : res.redirect('/');
+    // If user is already at login or register page no need to redirect and cause infinit middleware check
+    isFormPage ? next() : res.redirect('/register');
   }
 }
 /*

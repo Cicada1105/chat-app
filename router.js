@@ -5,14 +5,16 @@ const pug = require('pug');
 // Utility functions
 const { 
   addUser, addUserRoom,
-  getRooms, getRoom, 
-  addRoom, incrementRoomUsers,
-  displayToConsole, resolveViewPath
+  registerUser, getUserByUsername,
+  addRoom, getRooms, getRoom, 
+  incrementRoomUsers,
+  displayToConsole, resolveViewPath,
 } = require('./utils');
 // Middleware
 const { userExists, clearCurrentRoom } = require('./middleware.js');
 
 const LOGIN_PAGE = pug.compileFile(resolveViewPath('login'));
+const REGISTER_PAGE = pug.compileFile(resolveViewPath('register'));
 const ROOMS_PAGE = pug.compileFile(resolveViewPath('rooms'));
 const ROOM_PAGE = pug.compileFile(resolveViewPath('room'));
 
@@ -40,6 +42,35 @@ Router.get('/rooms', [userExists, clearCurrentRoom], (req,res) => {
       rooms
     })
   );
+})
+Router.get('/register', [userExists], (req,res) => {
+  res.end(REGISTER_PAGE());
+});
+Router.post('/register', [userExists], (req,res) => {
+  let { username, password } = req.body;
+
+  let user = getUserByUsername(username);
+
+  if ( user ) {
+    res.end(REGISTER_PAGE({
+      errorMsg: 'User already exists.'
+    }));
+  }
+  else {
+    // Hash password and store user
+    let newUserID = registerUser({ username, password })
+
+    if ( newUserID ) {
+      res.cookie('uci',newUserID);
+      // Redirect to rooms page
+      res.redirect('/rooms'); 
+    }
+    else {
+      res.end(REGISTER_PAGE({
+        errorMsg: 'Error registering user.'
+      })); 
+    }
+  }
 })
 Router.post('/rooms', [userExists], (req,res) => {
   let { room_name, room_max_users } = req.body;
