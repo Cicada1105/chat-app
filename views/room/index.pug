@@ -1,93 +1,95 @@
-doctype html
-html(lang='en')
-  head
-    title Socket.IO chat
-    style
-      include ./index.css
-  body
-    h1#user Welcome #{user['username']}
-    h2#room Room: #{room['name']}
-    ul#messages
-    ul#userActions
-    form#form
-      input(id="input" name='message' autocomplete="off")
-      button Send
+extends ../template.pug
 
-    script
-      include ../../node_modules/socket.io/client-dist/socket.io.js
-    script(type='text/javascript').
-      const userID = "#{user['id']}";
-      const roomID = "#{room['id']}"
+block title
+  title Socket.IO chat | #{room['name']}
 
-      // Connect to socket, passing in userID and roomID as data
-      var socket = io('/chat',{
-        query: {
-          userID,
-          roomID
-        }
-      });
+block append styles
+  include ./index.css
 
-      var form = document.getElementById('form');
-      var inputField = form['message'];
-      var messages = document.getElementById('messages');
-      var userActions = document.getElementById('userActions');
+block content
+  h1#user Welcome #{user['username']}
+  h2#room Room: #{room['name']}
+  ul#messages
+  ul#userActions
+  form#form
+    input(id="input" name='message' autocomplete="off")
+    button Send
 
-      let isTyping = false;
-      inputField.addEventListener('keyup',(e) => {
-        if ( e.target.value.length === 1 && !isTyping ) {
-          isTyping = !isTyping;
-          socket.emit('isTyping')
-        }
-        else if ( e.target.value.length === 0 && isTyping ) {
-          isTyping = false;
-          socket.emit('isNotTyping');
-        }
-      });
-      form.onsubmit = function(e) {
-        e.preventDefault();
+  script
+    include ../../node_modules/socket.io/client-dist/socket.io.js
+  script(type='text/javascript').
+    const userID = "#{user['id']}";
+    const roomID = "#{room['id']}"
 
-        let message = form['message'].value;
-        let messageLI = document.createElement('li');
-        messageLI.setAttribute('id','me');
-
-        messageLI.textContent = `Me: ${message}`;
-        messages.appendChild(messageLI);
-        socket.send({ message });
-
-        form.reset();
+    // Connect to socket, passing in userID and roomID as data
+    var socket = io('/chat',{
+      query: {
+        userID,
+        roomID
       }
+    });
 
-      function displayMessage(msg) {
-        let messageLI = document.createElement('li');
-        messageLI.textContent = msg;
-        messages.appendChild(messageLI);
+    var form = document.getElementById('form');
+    var inputField = form['message'];
+    var messages = document.getElementById('messages');
+    var userActions = document.getElementById('userActions');
+
+    let isTyping = false;
+    inputField.addEventListener('keyup',(e) => {
+      if ( e.target.value.length === 1 && !isTyping ) {
+        isTyping = !isTyping;
+        socket.emit('isTyping')
       }
-      socket.on('userConnected', (data) => {
-        let { username } = data;
+      else if ( e.target.value.length === 0 && isTyping ) {
+        isTyping = false;
+        socket.emit('isNotTyping');
+      }
+    });
+    form.onsubmit = function(e) {
+      e.preventDefault();
 
-        displayMessage(`${username} connected.`);
-      })
-      socket.on('userTyping',(data) => {
-        let { id, username } = data;
-        let typingLI = document.createElement('li');
-        typingLI.setAttribute('id',id);
-        typingLI.innerHTML = `${username} <div class='typing-bubbles'><span></span><span></span><span></span></div>`;
-        userActions.appendChild(typingLI);
-      });
-      socket.on('userNotTyping',(data) => {
-        let { id } = data;
-        userActions.children[id].remove();
-      });
-      socket.on('newMessage', (data) => {
-        let { message } = data;
+      let message = form['message'].value;
+      let messageLI = document.createElement('li');
+      messageLI.setAttribute('id','me');
 
-        displayMessage(message);
-      });
-      socket.on('userDisconnected',(data) => {
-        let { username } = data;
+      messageLI.textContent = `Me: ${message}`;
+      messages.appendChild(messageLI);
+      socket.send({ message });
 
-        displayMessage(`${username} disconnected`);
-      });
-      socket.on('disconnect',() => {
-        window.location.assign('/rooms');
-      });
+      form.reset();
+    }
+
+    function displayMessage(msg) {
+      let messageLI = document.createElement('li');
+      messageLI.textContent = msg;
+      messages.appendChild(messageLI);
+    }
+    socket.on('userConnected', (data) => {
+      let { username } = data;
+
+      displayMessage(`${username} connected.`);
+    })
+    socket.on('userTyping',(data) => {
+      let { id, username } = data;
+      let typingLI = document.createElement('li');
+      typingLI.setAttribute('id',id);
+      typingLI.innerHTML = `${username} <div class='typing-bubbles'><span></span><span></span><span></span></div>`;
+      userActions.appendChild(typingLI);
+    });
+    socket.on('userNotTyping',(data) => {
+      let { id } = data;
+      userActions.children[id].remove();
+    });
+    socket.on('newMessage', (data) => {
+      let { message } = data;
+
+      displayMessage(message);
+    });
+    socket.on('userDisconnected',(data) => {
+      let { username } = data;
+
+      displayMessage(`${username} disconnected`);
+    });
+    socket.on('disconnect',() => {
+      window.location.assign('/rooms');
+    });

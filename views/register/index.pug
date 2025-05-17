@@ -1,11 +1,16 @@
-doctype html
-html(lang='en')
-  head
-    title Socket.IO chat | Register
-    style
-      include ./index.css
-    script
-      include ./index.js
+extends ../template.pug
+
+block title
+  title Socket.IO chat | Register
+
+block append styles
+  include ./index.css
+
+block scripts
+  script
+    include ./index.js
+
+block content  
   body(onload='init()')
     h1 Register
     form(id='registrationForm' action='/register' method='POST')

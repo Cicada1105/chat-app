@@ -1,9 +1,12 @@
-doctype html
-html(lang='en')
-  head
-    title Socket.IO chat
-    style
-      include ./index.css
+extends ../template.pug
+
+block title
+  title Socket.IO chat | Login
+
+block append styles
+  include ./index.css
+
+block content
   body
     h1 Enter Username
     form(id='form' action='/login' method='POST')

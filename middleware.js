@@ -16,7 +16,7 @@ function userExists(req,res,next) {
     }
   }
 
-  const isFormPage = req.url === '/' || req.url == '/register';
+  const isFormPage = req.url === '/' || req.url === '/login' || req.url === '/register';
   if ( userID ) {
     const user = getUser(userID);
 

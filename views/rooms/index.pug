@@ -1,43 +1,46 @@
-doctype html
-html(lang='en')
-  head
-    title Socket.IO chat
+extends ../template.pug
 
-    script(src="https://kit.fontawesome.com/de38352bbc.js" crossorigin="anonymous")
-    style
-      include ./index.css
-  body
-    ul#rooms
-      li#addRoom
-        button(popovertarget='formPopover')
-          div
-      each room in rooms
-        li
-          h2
-            a(href=`/room/${room['id']}`)= room['name']
-          p #{room['num_users']}/#{room['max_num_users']}
-          if ( room['owner_id'] == user['id'] )
-            button(onclick=`closeRoom('${user["id"]}','${room["id"]}')`)
-              i.fa-regular.fa-trash-can
+block title
+  title Socket.IO chat | Rooms
 
-    div(popover id='formPopover')
-      form(id='form' action='/rooms' method='post')
-        input(id="input" name='room_name' placeholder='Enter Room Name' autocomplete="off" required)
-        input(type='number' name='room_max_users' min='2' max='12' placeholder='Max Room Size' required)
-        button Create
+block scripts
+  script(src="https://kit.fontawesome.com/de38352bbc.js" crossorigin="anonymous")
 
-    script
-      include ../../node_modules/socket.io/client-dist/socket.io.js
-    script(type='text/javascript').
-      var socket = io('/rooms');
+block append styles
+  include ./index.css
 
-      function closeRoom(userID, roomID) {
-        console.log('closing');
+block content
+  ul#rooms
+    li#addRoom
+      button(popovertarget='formPopover')
+        div
+    each room in rooms
+      li
+        h2
+          a(href=`/room/${room['id']}`)= room['name']
+        p #{room['num_users']}/#{room['max_num_users']}
+        if ( room['owner_id'] == user['id'] )
+          button(onclick=`closeRoom('${user["id"]}','${room["id"]}')`)
+            i.fa-regular.fa-trash-can
 
-        socket.emit('closeRoom',{
-          userID,
-          roomID
-        });
-        // window.location.reload();
-        window.location.assign('/rooms');
-      }
+  div(popover id='formPopover')
+    form(id='form' action='/rooms' method='post')
+      input(id="input" name='room_name' placeholder='Enter Room Name' autocomplete="off" required)
+      input(type='number' name='room_max_users' min='2' max='12' placeholder='Max Room Size' required)
+      button Create
+
+  script
+    include ../../node_modules/socket.io/client-dist/socket.io.js
+  script(type='text/javascript').
+    var socket = io('/rooms');
+
+    function closeRoom(userID, roomID) {
+      console.log('closing');
+
+      socket.emit('closeRoom',{
+        userID,
+        roomID
+      });
+      // window.location.reload();
+      window.location.assign('/rooms');
+    }

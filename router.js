@@ -13,12 +13,16 @@ const {
 // Middleware
 const { userExists, clearCurrentRoom } = require('./middleware.js');
 
+const HOME_PAGE = pug.compileFile(resolveViewPath('home'));
 const LOGIN_PAGE = pug.compileFile(resolveViewPath('login'));
 const REGISTER_PAGE = pug.compileFile(resolveViewPath('register'));
 const ROOMS_PAGE = pug.compileFile(resolveViewPath('rooms'));
 const ROOM_PAGE = pug.compileFile(resolveViewPath('room'));
 
-Router.get('/', [userExists], (req,res) => {
+Router.get('/',(req,res) => {
+  res.end(HOME_PAGE());
+})
+Router.get('/login', [userExists], (req,res) => {
   res.end(LOGIN_PAGE());
 });
 Router.post('/login', (req,res) => {
