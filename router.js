@@ -21,19 +21,26 @@ const ROOM_PAGE = pug.compileFile(resolveViewPath('room'));
 
 Router.get('/',(req,res) => {
   res.end(HOME_PAGE());
-})
+});
 Router.get('/login', [userExists], (req,res) => {
   res.end(LOGIN_PAGE());
 });
 Router.post('/login', (req,res) => {
   let { username } = req.body;
 
-  let newUserID = addUser(username);
+  // Check if user exists
+  let user = getUserByUsername(username);
 
-  displayToConsole(`New user created: "${username}"`);
+  if ( !user )
+    res.end(LOGIN_PAGE({
+      errorMsg: 'User does not exist.'
+    }));
+  else {
+    displayToConsole(`User logging in: "${user['username']}"`);
 
-  res.cookie('uci',newUserID);
-  res.redirect('/rooms');
+    res.cookie('uci',user['id']);
+    res.redirect('/rooms'); 
+  }
 });
 Router.get('/rooms', [userExists, clearCurrentRoom], (req,res) => {
   const rooms = getRooms();
@@ -65,6 +72,7 @@ Router.post('/register', [userExists], (req,res) => {
     let newUserID = registerUser({ username, password })
 
     if ( newUserID ) {
+      displayToConsole(`New user created: "${username}"`);
       res.cookie('uci',newUserID);
       // Redirect to rooms page
       res.redirect('/rooms'); 
@@ -75,7 +83,7 @@ Router.post('/register', [userExists], (req,res) => {
       })); 
     }
   }
-})
+});
 Router.post('/rooms', [userExists], (req,res) => {
   let { room_name, room_max_users } = req.body;
 
@@ -90,7 +98,7 @@ Router.post('/rooms', [userExists], (req,res) => {
   displayToConsole(`Room "${room_name}" created by "${user['username']}"`);
 
   res.redirect(`/room/${newRoomID}`);
-})
+});
 Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [userExists], (req,res) => {
   const { roomID } = req.params;
 
@@ -126,7 +134,7 @@ Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [userExists], (req,res) =>
       res.redirect('/rooms');
     }
   }
-})
+});
 // Redirect any other incorrect path traffic to the home page
 // Not properly catching as fallback
 /*Router.use('*', (req,res) => {

@@ -9,6 +9,7 @@ block append styles
 block content
   body
     h1 Enter Username
+    p#error= errorMsg || ''
     form(id='form' action='/login' method='POST')
       input(id="input" name='username' autocomplete="off" placeholder='Username')
       button Send
