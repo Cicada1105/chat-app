@@ -17,7 +17,7 @@ const {
 } = require('./rooms.js');
 // Functions for authentication
 const {
-  registerUser
+  registerUser, generateUserToken, verifyUserToken
 } = require('./auth.js');
 
 module.exports = {
@@ -26,5 +26,5 @@ module.exports = {
   getRooms, getRoom, addRoom, getUserByUsername, removeRoom,
   incrementRoomUsers, decrementRoomUsers,
   displayToConsole, resolveViewPath,
-  registerUser
+  registerUser, generateUserToken, verifyUserToken
 }

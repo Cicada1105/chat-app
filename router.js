@@ -5,13 +5,16 @@ const pug = require('pug');
 // Utility functions
 const { 
   addUser, addUserRoom,
-  registerUser, getUserByUsername,
+  registerUser, generateUserToken,
+  getUserByUsername, getUser,
   addRoom, getRooms, getRoom, 
   incrementRoomUsers,
   displayToConsole, resolveViewPath,
 } = require('./utils');
 // Middleware
-const { userExists, clearCurrentRoom } = require('./middleware.js');
+const {
+  authenticateUser, verifySession, clearCurrentRoom
+} = require('./middleware.js');
 
 const HOME_PAGE = pug.compileFile(resolveViewPath('home'));
 const LOGIN_PAGE = pug.compileFile(resolveViewPath('login'));
@@ -22,42 +25,10 @@ const ROOM_PAGE = pug.compileFile(resolveViewPath('room'));
 Router.get('/',(req,res) => {
   res.end(HOME_PAGE());
 });
-Router.get('/login', [userExists], (req,res) => {
-  res.end(LOGIN_PAGE());
-});
-Router.post('/login', (req,res) => {
-  let { username } = req.body;
-
-  // Check if user exists
-  let user = getUserByUsername(username);
-
-  if ( !user )
-    res.end(LOGIN_PAGE({
-      errorMsg: 'User does not exist.'
-    }));
-  else {
-    displayToConsole(`User logging in: "${user['username']}"`);
-
-    res.cookie('uci',user['id']);
-    res.redirect('/rooms'); 
-  }
-});
-Router.get('/rooms', [userExists, clearCurrentRoom], (req,res) => {
-  const rooms = getRooms();
-
-  const user = req.user;
-
-  res.end(
-    ROOMS_PAGE({
-      user,
-      rooms
-    })
-  );
-})
-Router.get('/register', [userExists], (req,res) => {
+Router.get('/register', [verifySession], (req,res) => {
   res.end(REGISTER_PAGE());
 });
-Router.post('/register', [userExists], (req,res) => {
+Router.post('/register', [verifySession], (req,res) => {
   let { username, password } = req.body;
 
   let user = getUserByUsername(username);
@@ -69,11 +40,16 @@ Router.post('/register', [userExists], (req,res) => {
   }
   else {
     // Hash password and store user
-    let newUserID = registerUser({ username, password })
+    let user = registerUser({ username, password })
 
-    if ( newUserID ) {
-      displayToConsole(`New user created: "${username}"`);
-      res.cookie('uci',newUserID);
+    if ( user ) {
+      displayToConsole(`New user created: "${user['id']}"`);
+      // Create a session token 
+      const token = generateUserToken({
+        id: user['id']
+      });
+      res.cookie('uci',token);
+
       // Redirect to rooms page
       res.redirect('/rooms'); 
     }
@@ -84,25 +60,57 @@ Router.post('/register', [userExists], (req,res) => {
     }
   }
 });
-Router.post('/rooms', [userExists], (req,res) => {
+Router.get('/login', [verifySession], (req,res) => {
+  res.end(LOGIN_PAGE());
+});
+Router.post('/login', [authenticateUser], (req,res) => {
+  if ( req.isAuthenticated ) {
+    const userID = req.id;
+    const token = generateUserToken({ id: userID });
+    // Set web token as cookie
+    res.cookie('uci',token);
+
+    displayToConsole(`User logging in: "${userID}"`);
+
+    res.redirect('/rooms'); 
+  }
+  else {
+    res.end(LOGIN_PAGE({
+      errorMsg: 'Login is incorrect.'
+    }));
+  }
+});
+Router.get('/rooms', [verifySession, clearCurrentRoom], (req,res) => {
+  const user = getUser(req.id)
+  const rooms = getRooms();
+
+  res.end(
+    ROOMS_PAGE({
+      user,
+      rooms
+    })
+  );
+})
+Router.post('/rooms', [verifySession], (req,res) => {
   let { room_name, room_max_users } = req.body;
 
-  const user = req.user;
+  const userID = req.id;
 
   const newRoomID = addRoom({
-    owner_id: user['id'],
+    owner_id: userID,
     room_name,
     room_max_users: parseInt(room_max_users)
   });
 
-  displayToConsole(`Room "${room_name}" created by "${user['username']}"`);
+  displayToConsole(`Room "${room_name}" created by "${userID}"`);
 
   res.redirect(`/room/${newRoomID}`);
 });
-Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [userExists], (req,res) => {
+Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [verifySession], (req,res) => {
   const { roomID } = req.params;
 
-  const user = req.user;
+  const userID = req.id;
+  const user = getUser(userID);
   const room = getRoom(roomID);
 
   // Check if room exists
@@ -116,14 +124,14 @@ Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [userExists], (req,res) =>
         user,
         room
       }));
-      displayToConsole(`User "${user['username']}" re-joining room "${room['name']}"`);
+      displayToConsole(`User "${userID}" re-joining room "${room['id']}"`);
     }
     // Increase total number of users in room if there is space available
     else if ( incrementRoomUsers(roomID) ) {
       // Add user to the room they are joining
-      addUserRoom(user['id'], roomID);
+      addUserRoom(userID, roomID);
 
-      displayToConsole(`User "${user['username']}" joining room "${room['name']}"`);
+      displayToConsole(`User "${userID}" joining room "${room['id']}"`);
 
       res.end(ROOM_PAGE({
         user,

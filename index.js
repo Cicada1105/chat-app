@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const http = require('http');
+require('dotenv').config();
+
 // Include path for setting relative paths
 const path = require('path');
 const { Server } = require("socket.io");

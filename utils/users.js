@@ -23,7 +23,7 @@ function addUser({ username, password, salt }) {
 
   _setFileData(data);
 
-  return newUser['id'];
+  return newUser;
 }
 function getUser(id) {
   let data = _getFileData();

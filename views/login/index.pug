@@ -11,5 +11,6 @@ block content
     h1 Enter Username
     p#error= errorMsg || ''
     form(id='form' action='/login' method='POST')
-      input(id="input" name='username' autocomplete="off" placeholder='Username')
+      input(name='username' autocomplete="off" placeholder='Username' required)
+      input(name='password' autocomplete="off" placeholder='Password' required)
       button Send
