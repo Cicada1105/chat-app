@@ -35,12 +35,14 @@ block content
     var userActions = document.getElementById('userActions');
 
     let isTyping = false;
-    inputField.addEventListener('keyup',(e) => {
-      if ( e.target.value.length === 1 && !isTyping ) {
+    inputField.addEventListener('keydown',(e) => {
+      const IS_BACKSPACE = e.keyCode === 8 || e.code === 'Backspace';
+
+      if ( e.target.value.length === 0 && !isTyping && !IS_BACKSPACE) {
         isTyping = !isTyping;
         socket.emit('isTyping')
       }
-      else if ( e.target.value.length === 0 && isTyping ) {
+      else if ( IS_BACKSPACE && e.target.value.length === 1 && isTyping ) {
         isTyping = false;
         socket.emit('isNotTyping');
       }
