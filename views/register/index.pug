@@ -4,25 +4,24 @@ block title
   title Socket.IO chat | Register
 
 block append styles
-  include ./index.css
+  style
+    include ./index.css
 
-block scripts
-  script
+block content
+  h1 Register
+  form(id='registrationForm' action='/register' method='POST')
+    p#error= errorMsg || ''
+    div.input-control
+      label(for='username') Username
+      input(id="username" name='username' autocomplete="off" placeholder='Username' required)
+    div.input-control
+      label(for='password') Password
+      input(id='password' type='password' name='password' autocomplete="off" placeholder='Password' required)
+    div.input-control
+      label(for='passwordConfirm') Confirm Password
+      input(id='passwordConfirm' type='password' autocomplete="off" placeholder='Confirm Password' required)
+
+    button Register
+
+  script(nonce=`${cspNonce}`)
     include ./index.js
-
-block content  
-  body(onload='init()')
-    h1 Register
-    form(id='registrationForm' action='/register' method='POST')
-      p#error= errorMsg || ''
-      div.input-control
-        label(for='username') Username
-        input(id="username" name='username' autocomplete="off" placeholder='Username' required)
-      div.input-control
-        label(for='password') Password
-        input(id='password' type='password' name='password' autocomplete="off" placeholder='Password' required)
-      div.input-control
-        label(for='passwordConfirm') Confirm Password
-        input(id='passwordConfirm' type='password' autocomplete="off" placeholder='Confirm Password' required)
-
-      button Register

@@ -23,10 +23,16 @@ const ROOMS_PAGE = pug.compileFile(resolveViewPath('rooms'));
 const ROOM_PAGE = pug.compileFile(resolveViewPath('room'));
 
 Router.get('/',(req,res) => {
+  res.set('Content-Type','text/html');
+
   res.end(HOME_PAGE());
 });
 Router.get('/register', [verifySession], (req,res) => {
-  res.end(REGISTER_PAGE());
+  res.set('Content-Type','text/html');
+
+  res.end(REGISTER_PAGE({
+    cspNonce: res.locals.cspNonce
+  }));
 });
 Router.post('/register', [verifySession], (req,res) => {
   let { username, password } = req.body;
@@ -34,6 +40,8 @@ Router.post('/register', [verifySession], (req,res) => {
   let user = getUserByUsername(username);
 
   if ( user ) {
+    res.set('Content-Type','text/html');
+
     res.end(REGISTER_PAGE({
       errorMsg: 'User already exists.'
     }));
@@ -54,6 +62,8 @@ Router.post('/register', [verifySession], (req,res) => {
       res.redirect('/rooms'); 
     }
     else {
+      res.set('Content-Type','text/html');
+
       res.end(REGISTER_PAGE({
         errorMsg: 'Error registering user.'
       })); 
@@ -61,6 +71,8 @@ Router.post('/register', [verifySession], (req,res) => {
   }
 });
 Router.get('/login', [verifySession], (req,res) => {
+  res.set('Content-Type','text/html');
+
   res.end(LOGIN_PAGE());
 });
 Router.post('/login', [authenticateUser], (req,res) => {
@@ -75,6 +87,8 @@ Router.post('/login', [authenticateUser], (req,res) => {
     res.redirect('/rooms'); 
   }
   else {
+    res.set('Content-Type','text/html');
+
     res.end(LOGIN_PAGE({
       errorMsg: 'Login is incorrect.'
     }));
@@ -84,10 +98,12 @@ Router.get('/rooms', [verifySession, clearCurrentRoom], (req,res) => {
   const user = getUser(req.id)
   const rooms = getRooms();
 
+  res.set('Content-Type','text/html');
   res.end(
     ROOMS_PAGE({
       user,
-      rooms
+      rooms,
+      cspNonce: res.locals.cspNonce
     })
   );
 })
@@ -120,11 +136,14 @@ Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [verifySession], (req,res)
   else {
     // If user is already in the room (ie. refresh) no need to add user to room
     if ( user.currRoom === roomID ) {
+      displayToConsole(`User "${userID}" re-joining room "${room['id']}"`);
+
+      res.set('Content-Type','text/html');
       res.end(ROOM_PAGE({
         user,
-        room
+        room,
+        cspNonce: res.locals.cspNonce
       }));
-      displayToConsole(`User "${userID}" re-joining room "${room['id']}"`);
     }
     // Increase total number of users in room if there is space available
     else if ( incrementRoomUsers(roomID) ) {
@@ -133,9 +152,11 @@ Router.get('/room/:roomID(\\w+-\\w+-\\w+-\\w+-\\w+)', [verifySession], (req,res)
 
       displayToConsole(`User "${userID}" joining room "${room['id']}"`);
 
+      res.set('Content-Type','text/html');
       res.end(ROOM_PAGE({
         user,
-        room
+        room,
+        cspNonce: res.locals.cspNonce
       }));
     }
     else {

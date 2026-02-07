@@ -4,10 +4,11 @@ block title
   title Socket.IO chat | Rooms
 
 block scripts
-  script(src="https://kit.fontawesome.com/de38352bbc.js" crossorigin="anonymous")
+  script(src="https://kit.fontawesome.com/de38352bbc.js",nonce=`${cspNonce}`)
 
 block append styles
-  include ./index.css
+  style
+    include ./index.css
 
 block content
   ul#rooms
@@ -20,7 +21,7 @@ block content
           a(href=`/room/${room['id']}`)= room['name']
         p #{room['num_users']}/#{room['max_num_users']}
         if ( room['owner_id'] == user['id'] )
-          button(onclick=`closeRoom('${user["id"]}','${room["id"]}')`)
+          button(class='delete-room-btn' data-user=`${user["id"]}` data-room=`${room["id"]}`)
             i.fa-regular.fa-trash-can
 
   div(popover id='formPopover')
@@ -29,18 +30,7 @@ block content
       input(type='number' name='room_max_users' min='2' max='12' placeholder='Max Room Size' required)
       button Create
 
-  script
+  script(nonce=`${cspNonce}`)
     include ../../node_modules/socket.io/client-dist/socket.io.js
-  script(type='text/javascript').
-    var socket = io('/rooms');
-
-    function closeRoom(userID, roomID) {
-      console.log('closing');
-
-      socket.emit('closeRoom',{
-        userID,
-        roomID
-      });
-      // window.location.reload();
-      window.location.assign('/rooms');
-    }
+  script(nonce=`${cspNonce}`)
+    include ./index.js
